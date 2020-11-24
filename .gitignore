@@ -21,6 +21,7 @@ Thumbs.db
 /backend/.ipynb_checkpoins
 /backend/flasker/__pycache__
 /backend/flaskr/*.pyc
+/backend/trivia.psql
 
 
 
