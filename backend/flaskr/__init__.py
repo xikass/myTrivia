@@ -43,8 +43,8 @@ def create_app(test_config=None):
   @app.route('/questions')
   def get_questions():
     page = request.args.get('page', 1 , type=int)
-    start = (page-1)*10
-    end = start+10
+    start = (page-1)*QUESTIONS_PER_PAGE
+    end = start+QUESTIONS_PER_PAGE
     questions = Question.query.all()
     categories = Category.query.all()
     formatted_questions = [question.format() for question in questions ]
