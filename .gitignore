@@ -14,7 +14,7 @@ Thumbs.db
 
 *.pyc
 
-
+/backend/*.ipynb
 /backend/__pychache__
 /backend/migrations
 /backend/venv
