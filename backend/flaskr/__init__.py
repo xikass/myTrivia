@@ -19,6 +19,16 @@ def create_app(test_config=None):
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
     response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE,OPTIONS')
     return response
+  
+  @app.route('/categories')
+  def get_categories():
+    categories = Category.query.all()
+
+    formatted_categories = [category.format() for category in categories]
+
+    return jsonify({
+      'categories' :formatted_categories
+    })
 
   '''
   @TODO: 
@@ -39,16 +49,17 @@ def create_app(test_config=None):
     end = start+QUESTIONS_PER_PAGE
 
     questions = Question.query.all()
-    categories = Category.query.all()
-
     formatted_questions = [question.format() for question in questions ]
-    formatted_categories = [category.format() for category in categories]
-
     current_questions = formatted_questions[start:end]
-    
-    
     if len(current_questions) == 0:
       abort(404)
+
+    categories  = Category.query.all()
+    formatted_categories = dict()
+
+    for category in categories:
+      formatted_categories[category.id] = category.type
+    
 
     return jsonify({
       'success' : True,
@@ -117,7 +128,21 @@ def create_app(test_config=None):
   only question that include that string within their question. 
   Try using the word "title" to start. 
   '''
+  @app.route('/questions/search')
+  def search_questions():
+    body = request.get_json()
 
+    search_term = f'%{body.get("searchTerm")}%'
+
+    questions = Question.query.filter(Question.question.ilike(search_term)).all()
+
+    formatted_questions = [question.format() for question in questions]
+
+    return jsonify({
+      'questions' : formatted_questions,
+      'total_questions' : len(formatted_questions),
+      'current_category' : None
+    })
   '''
   @TODO: 
   Create a GET endpoint to get questions based on category. 
