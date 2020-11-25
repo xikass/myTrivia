@@ -43,7 +43,7 @@ class Question(db.Model):
       'id': self.id,
       'question': self.question,
       'answer': self.answer,
-      'category': self.category,
+      'category': self.category.format(),
       'difficulty': self.difficulty
     }
 
@@ -56,7 +56,6 @@ class Category(db.Model):
 
   id = Column(Integer, primary_key=True)
   type = Column(String)
-  question = relationship('Question', backref=backref('categories', lazy=True))
 
   def __init__(self, type):
     self.type = type
