@@ -20,13 +20,6 @@ def create_app(test_config=None):
     response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE,OPTIONS')
     return response
 
-  @app.route('/')
-  def hello():
-    return jsonify({
-      'message': 'Hello, World!'
-    })
-
-
   '''
   @TODO: 
   Create an endpoint to handle GET requests for questions, 
@@ -44,14 +37,22 @@ def create_app(test_config=None):
     page = request.args.get('page', 1 , type=int)
     start = (page-1)*QUESTIONS_PER_PAGE
     end = start+QUESTIONS_PER_PAGE
+
     questions = Question.query.all()
     categories = Category.query.all()
+
     formatted_questions = [question.format() for question in questions ]
     formatted_categories = [category.format() for category in categories]
+
+    current_questions = formatted_questions[start:end]
     
+    
+    if len(current_questions) == 0:
+      abort(404)
+
     return jsonify({
       'success' : True,
-      'questions' : formatted_questions[start:end],
+      'questions' : current_questions,
       'total_questions' : len(formatted_questions),
       'categories' : formatted_categories,
       'current_category': None
@@ -63,12 +64,21 @@ def create_app(test_config=None):
   TEST: When you click the trash icon next to a question, the question will be removed.
   This removal will persist in the database and when you refresh the page. 
   '''
-  app.route('/questions/<int:question_id>', methods=['DELETE'])
+  @app.route('/questions/<int:question_id>', methods=['DELETE'])
   def delete_question(question_id):
-    question = Question.query.filter(Question.id == question_id).firts()
+    
+    question = Question.query.filter(Question.id == question_id).first()
+   
+    if question is None:
+      abort(404)
+    
     question.delete()
+
+    total_questions =  Question.query.count()
     return jsonify({
-      'success': True
+      'success': True,
+      'deleted' : question_id,
+      'total_questions': total_questions
     })
   '''
   @TODO: 
@@ -82,19 +92,19 @@ def create_app(test_config=None):
   '''
   @app.route('/questions', methods=['POST'])
   def create_question():
-    '''
-    @TODO: complete this
-    '''
+
     body = request.get_json()
     question=body.get('question'),
-    answer= body.get('answer', None),
-    difficulty=body.get('difficulty', None)
+    answer= body.get('answer'),
+    difficulty=body.get('difficulty')
+    category = body.get('category', None)
     question_obj = Question(question=question, 
                             answer=answer, 
                             difficulty=difficulty, 
-                            category=None)
+                            category=category)
+    question_obj.insert()
     
-    return jsonify({"success": question_obj.question})
+    return jsonify(question_obj.format())
 
 
   '''
@@ -135,7 +145,30 @@ def create_app(test_config=None):
   Create error handlers for all expected errors 
   including 404 and 422. 
   '''
+  @app.errorhandler(404)
+  def not_found(error):
+    return jsonify({
+      'success': False,
+      'error' : 404,
+      'message': 'resources not found'
+    }), 404
+
+  @app.errorhandler(405)
+  def not_allowed(error):
+    return jsonify({
+      'success': False,
+      'error' : 405,
+      'message' : 'Method Not allowed'
+    }), 405
   
+  @app.errorhandler(400)
+  def bad_request(error):
+    return jsonify({
+      'success' : False,
+      'error' : 400,
+      'message' : 'Bad Request'
+    }),400
+    
   return app
 
     
