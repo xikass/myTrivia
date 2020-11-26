@@ -3,6 +3,7 @@ from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
+from datetime import datetime
 from .models import Question, Category
 from .db import setup_db
 
@@ -196,18 +197,22 @@ def create_app(test_config=None):
     else:
       questions = Question.query.filter(Question.category == quiz_category['id']).all()
     
+    if questions == []:
+      abort(404)
     questions = [question.format() for question in questions]
-    q = random.choice(questions)
-    data = dict()
 
-    for question in questions:
-      if q['id'] == question['id']:
-        random.seed()
-        q = random.choice(questions)
+    data = {
+      'question': None,
+      'success': True
+    }
+    counter = 0
+    while(counter<len(questions)):
+      q = random.choice(questions)
+      if q['id'] in previous_questions:
+        counter+=1
         continue
-      else:
-        data['question'] = q
-    data['success'] = True
+      data['question'] = q
+      return jsonify(data)
     
     return jsonify(data)
 
