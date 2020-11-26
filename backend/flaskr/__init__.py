@@ -187,9 +187,9 @@ def create_app(test_config=None):
     #get data
     req = request.get_json()
     previous_questions = req.get('previous_questions')
-    quiz_category = req.get('quiz_category', None)
+    quiz_category = req.get('quiz_category')
 
-    #set 
+    #set questions list
     questions = ''
     if quiz_category['id'] == 0:
       questions = Question.query.all()
@@ -198,11 +198,15 @@ def create_app(test_config=None):
     
     questions = [question.format() for question in questions]
     q = random.choice(questions)
-    if previous_questions is not None:
-      while ( q in previous_questions ):
-        q = random.choice(questions)
     data = dict()
-    data['question'] = q
+
+    for question in questions:
+      if q['id'] == question['id']:
+        random.seed()
+        q = random.choice(questions)
+        continue
+      else:
+        data['question'] = q
     data['success'] = True
     
     return jsonify(data)
