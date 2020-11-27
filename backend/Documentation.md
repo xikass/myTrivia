@@ -5,10 +5,15 @@
 # Resource Endpoint Library
 
 ## GET /categories
-- fetches a dictionary of categories, where the key is the category id  and the value is the category name
-- Request Arguments : None
-- Response sample
+fetches a dictionary of categories, where the key is the category id  and the value is the category name
+### Request Arguments : 
+    None
+### Response
+response is a JSOn object containing two keys
+1. categories : a JSON object of all categories
+2. success : [boolean] true if the successful
 
+sample response
 ```json
 {
     "categories" : 
@@ -36,21 +41,29 @@ The response is a json object containing the following key valye pairs.\
 Sample Response
 ```json
 {
-      "success" : true,
-      "questions" : [{}, {}],
-      "total_questions" : 0,
-      "categories" : {},
-      "current_category": null
+    "success" : true,
+    "questions" : [
+        {
+            "id" : 1,
+            "question" : "is it a smaple question?",
+            "answer" : "this is the answer",
+            "category" : 2,
+            "difficulty" : 3
+        }, 
+        {
+            "id" : 2,
+            "question" : "is another it a smaple question?",
+            "answer" : "this another is the answer",
+            "category" : 3,
+            "difficulty" : 2
+        },{...}],
+    "total_questions" : 10,
+    "categories" : {},
+    "current_category": null
 }
 
 ```
 Sample question JSON object
 ```json
-{
-    "id" : 1,
-    "question" : "is it a smaple question?",
-    "answer" : "this is the answer",
-    "category" : 2,
-    "difficulty" : 3
-}
+
 ```
