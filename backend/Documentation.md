@@ -263,6 +263,14 @@ the randomly retrieved question object not found in the previous_question array
 
 conventional HTTP response codes to indicate the success or failure of an API request. In general: Codes in the 2xx range indicate success. Codes in the 4xx range indicate an error that failed given the information provided (e.g., a required parameter was omitted). Codes in the 5xx range indicate an error with the server.
 
+## Expected Errors
+
+1. __400__ bad request
+2. __404__ resource not found
+3. __405__ method not allowed
+4. __422__ unprocessable
+5. __500__ server error
+
 ## ERROR attributes
 ### success _Boolean_
 will be always false in case of error
