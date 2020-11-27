@@ -85,7 +85,7 @@ array of questions objects. 10 questions per page
 the total count of the ALL questions in the database
 #### categories _JSON_
 object of key value pairs of categories. Key is the id. Value is the category name
-#### current_category _
+#### current_category 
 null by default. 
 
 ```json
