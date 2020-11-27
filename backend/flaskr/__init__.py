@@ -31,6 +31,12 @@ def create_app(test_config=None):
   
   @app.route('/categories')
   def get_categories():
+    '''
+      return all categories from the database
+      categories dict contains
+      key = the category id
+      value = the category type
+    '''
     categories = Category.query.all()
     if categories is None:
       abort(404)
@@ -46,6 +52,13 @@ def create_app(test_config=None):
 
   @app.route('/questions')
   def get_questions():
+    '''
+    consume page (integer)
+    if not supplied, page default to 1
+    Return 10 question objects per page if success
+    Return 404 if failed
+    '''
+
     #get questions
     questions = Question.query.all()
     if len(questions) == 0:
@@ -70,7 +83,11 @@ def create_app(test_config=None):
 
   @app.route('/questions/<int:question_id>', methods=['DELETE'])
   def delete_question(question_id):
-    
+    '''
+    consume question_id (integer)
+    Return success message with the deleted question id and the total remaining
+    Return 422 if failed
+    '''
     #get question
     question = Question.query.filter(Question.id == question_id).first()
     if question is None:
@@ -90,6 +107,21 @@ def create_app(test_config=None):
     
   @app.route('/questions', methods=['POST'])
   def create_question():
+    '''
+      used for both search and creating question
+      for search :
+        searchTerm (string) should be supplied as json
+      for creating new question, the following should be supplied:
+        {
+          "question" : "string of the question statement?",
+          "answer" : "string of the answer",
+          "difficulty" : an integer between 1 and 3 inclusive,
+          "category" : category_id
+        }
+      if failed will return 400
+
+    '''
+
     #get body json
     body = request.get_json()
 
@@ -126,6 +158,11 @@ def create_app(test_config=None):
 
   @app.route('/categories/<int:category_id>/questions')
   def get_questions_by_category(category_id):
+    '''
+    consume category_id (integer)
+    get all questions that have the same category_id value
+    return 404 if failed
+    '''
     try:
       #get questions
       query = Question.query.filter(Question.category==category_id).all()
