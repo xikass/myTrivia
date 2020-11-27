@@ -127,3 +127,28 @@ the total count of the ALL questions in the database
       "total_questions" : 20
 }
 ```
+
+## Delete Question
+this endpoint deletes a specified question by its unique id
+> Endpoints\
+>__DELETE__ /questions/:id
+
+### Request Parameters
+#### :id _Integer_ __REQUIRED__
+the id of the question to be deleted
+### Response
+if success, return is JSON object contains
+#### success _Boolean_
+true by default
+#### deleted _Integer_
+id of the question which is successfuly deleted
+#### total_questions _Integer_
+the total count of the ALL remaining questions in the database
+
+```json
+    {
+      "success": true,
+      "deleted" : 1,
+      "total_questions": 19
+    }
+```
