@@ -9,7 +9,7 @@
 - Request body : None
 - Response sample
 
-''' json
+```json
 {
     'categories' : 
     {
@@ -19,4 +19,4 @@
     },
     'success' : true
 }
-,,,
+```
