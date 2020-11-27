@@ -211,9 +211,6 @@ def create_app(test_config=None):
     
     return jsonify(data)
 
-    
-
-
   '''
   @TODO: 
   Create error handlers for all expected errors 
@@ -242,6 +239,14 @@ def create_app(test_config=None):
       'error' : 400,
       'message' : 'Bad Request'
     }),400
+  
+  @app.errorhandler(422)
+  def unprocessable(error):
+    return jsonify({
+      'success': False,
+      'error': 422,
+      'message': 'unprocessable entity'
+    })
     
   return app
 
