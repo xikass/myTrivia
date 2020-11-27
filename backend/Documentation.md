@@ -1,6 +1,5 @@
 # Introduction
-
-# Getting Started
+Our API has predictable resource-oriented URLs, accepts JSON-encoded request bodies, returns JSON-encoded responses, and uses standard HTTP response codes, and verbs.
 
 # Resource Endpoint Library
 
@@ -226,4 +225,58 @@ the category object that the questions are filtered by
       "total_questions": 20,
       "current_category": "<category_object>"
       }
+```
+## Quiz
+This endpoint should take category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions. 
+
+> Endpoints\
+>__POST__ /quizzes
+
+### Request Parameters
+a JSON object that contains
+#### previous_questions _ARRAY_
+array of integers. this array hold the IDs of the previous questions
+#### quiz_category
+array of integers. this array hold the ID of quiz questions category. if 0 all questions are retrieved
+#### sample request body
+```json
+{
+    "previous_questions": [1,23],
+    "quiz_category": 5
+}
+```
+### Response
+if success, return is JSON object. if the quiz requires questions more than the questions query of a specified category, it will return question attribute to be null
+#### success _Boolean_
+true by default
+#### question _Question Object_
+the randomly retrieved question object not found in the previous_question array
+
+```json
+    {
+      "success":true,
+      "question": "<question_object>"
+    }
+```
+
+# ERRORS
+
+conventional HTTP response codes to indicate the success or failure of an API request. In general: Codes in the 2xx range indicate success. Codes in the 4xx range indicate an error that failed given the information provided (e.g., a required parameter was omitted). Codes in the 5xx range indicate an error with the server.
+
+## ERROR attributes
+### success _Boolean_
+will be always false in case of error
+### error _Integer_
+the standard error code
+### message _String_
+a breif description of the error
+### sample error JSON
+
+```json
+    {
+      "success" : false,
+      "error" : 400,
+      "message" : "Bad Request"
+    }
+
 ```
