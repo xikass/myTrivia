@@ -11,12 +11,13 @@
 
 ```json
 {
-    'categories' : 
+    "categories" : 
     {
-        '1' : 'sport',
-        '2' ; 'history',
-        '3' : 'geography'
+        "1" : "Sport",
+        "2" : "Geography",
+        "3" : "Science"
+
     },
-    'success' : true
+    "success" : true
 }
 ```
