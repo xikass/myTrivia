@@ -46,7 +46,6 @@ class TriviaTestCase(unittest.TestCase):
         for category in categories:
             formatted_categories[f'{category.id}'] = category.type
 
-        
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['success'])
         self.assertListEqual(data['questions'], formatted_questions[0:10])
