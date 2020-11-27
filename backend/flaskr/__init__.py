@@ -93,7 +93,11 @@ def create_app(test_config=None):
     #get body json
     body = request.get_json()
 
-    search_term =body.get('searchTearm', None)
+    search_term =body.get('searchTerm')
+    question=body.get('question', None),
+    answer= body.get('answer', None),
+    difficulty=body.get('difficulty', None)
+    category = body.get('category', None)
     if search_term:
       search_term = f'%{search_term}%'
       # get all questions that has case insensetive LIKE search_term
@@ -107,11 +111,8 @@ def create_app(test_config=None):
         })
       except:
         abort(400)
-    else:
-      question=body.get('question', None),
-      answer= body.get('answer', None),
-      difficulty=body.get('difficulty', None)
-      category = body.get('category', None)
+    elif (question[0] and answer[0] and difficulty) :
+      print(question)
       question_obj = Question(question=question, 
                             answer=answer, 
                             difficulty=difficulty, 
@@ -120,6 +121,8 @@ def create_app(test_config=None):
       data = question_obj.format()
       data['success']= True
       return jsonify(data)
+    else:
+      abort(400)
 
   @app.route('/categories/<int:category_id>/questions')
   def get_questions_by_category(category_id):
