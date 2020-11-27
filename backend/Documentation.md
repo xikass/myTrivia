@@ -26,7 +26,7 @@ sample response
     "success" : true
 }
 ```
-## GET /questions
+## <span style="color:green"> GET </span> /questions
 fetches all questions from the database
 ### Request Arguments (_optional_) : 
 URL query argument is __page__\
