@@ -28,7 +28,7 @@ sample response
 ```
 ## GET /questions
 fetches all questions from the database
-### Request Arguments _optional_ : 
+### Request Arguments (_optional_) : 
 URL query argument is __page__\
 for instance: ```/questions?page=2```. if not supplied it is defaulted to page=1
 ### Response: 
