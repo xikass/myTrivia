@@ -52,7 +52,6 @@ preferrably to be one or two words
 used to filter the questions by category for quiz or listing
 #### difficulty _integer_ 
 1 is the easiest 3 is the hardest
-
 ### Response
 ```json
 {
@@ -89,13 +88,42 @@ object of key value pairs of categories. Key is the id. Value is the category na
 null by default. 
 
 ```json
-
- {
+{
       "success" : true,
       "questions" : [{},{}],
       "total_questions" : 20,
       "categories" : {},
       "current_category": null
-    }
+}
+```
 
+## Search Questions
+this endpoint retrieve questions search results according to the submitted string
+> Endpoints\
+>__POST__ /questions
+
+### Request Parameters
+#### searchTerm _String_ __REQUIRED__
+it is the string required to search
+```json
+{
+    "searchTerm": "String"
+}
+```
+
+### Response
+if success, return is JSON object contains
+#### success _Boolean_
+true by default
+#### questions _ARRAY_
+array of questions objects. 10 questions per page
+#### total_questions _Integer_
+the total count of the ALL questions in the database
+
+```json
+{
+      "success" : true,
+      "questions" : [{},{}],
+      "total_questions" : 20
+}
 ```
