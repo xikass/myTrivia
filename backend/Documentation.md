@@ -8,10 +8,10 @@
 Questions are the main component of the trivia app. Each Question has a unique id, question , difficulty, and category attributes
 
 > Endpoints
-> __GET__   /questions
-> __POST__  /questions
-> __POST__  /questions
-> __DELETE__/questions/:id
+> __GET__   /questions\
+> __POST__  /questions\
+> __POST__  /questions\
+> __DELETE__/questions/:id\
 
 ## The Model Object
 
