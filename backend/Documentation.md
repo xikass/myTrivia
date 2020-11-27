@@ -152,3 +152,78 @@ the total count of the ALL remaining questions in the database
       "total_questions": 19
     }
 ```
+
+## Category
+Category is the mean of questions classification according to the knowledge area
+
+> Endpoints\
+> __GET__   /categories\
+> __GET__   /categories/:id/questions
+
+## Category Object
+```json
+{
+    "id" : 1,
+    "type" : "category name"
+}
+```
+
+### atributes
+
+#### id _integer_
+unique identifier of the category
+#### type _string_
+this is the category name
+
+## Retrieve categories
+this request gets all categories in the database
+> Endpoints\
+>__GET__ /categories
+
+### Request Parameters
+None
+### Response
+if success, return is JSON object contains
+#### success _Boolean_
+true by default
+#### categories _JSON_
+a key value pairs of categories where the key is the category id and the value is the category type
+
+```json
+{
+      "success" : true,
+      "categories" : {
+          "1" : "category type",
+          "2" : "another type"
+      }
+}
+```
+
+## Filter questions by category
+this request gets all question of a specified category
+> Endpoints\
+>__GET__ /categories/:id/questions
+
+### Request Parameters
+#### :id _Integer_ __REQUIRED__
+the id of the category to be used to filter the questions
+### Response
+if success, return is JSON object contains
+#### success _Boolean_
+true by default
+#### categories _JSON_
+a key value pairs of categories where the key is the category id and the value is the category type
+#### questions _ARRAY_
+array of questions objects. 10 questions per page
+#### total_questions _Integer_
+the total count of the ALL questions in the database
+#### current_category _Category Object_
+the category object that the questions are filtered by
+```json
+    {
+      "success":true,
+      "questions": ["<question_object>","<question_object>"],
+      "total_questions": 20,
+      "current_category": "<category_object>"
+      }
+```
