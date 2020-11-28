@@ -13,9 +13,9 @@ def paginate_questions(request, query):
   page_number = request.args.get('page', 1, type=int)
   start = (page_number-1)*QUESTIONS_PER_PAGE
   end = start+QUESTIONS_PER_PAGE
-  formatted_questions = [question.format() for question in query]
+  formatted_questions = [question.format() for question in query[start:end]]
 
-  return formatted_questions[start:end]
+  return formatted_questions
 
 def create_app(test_config=None):
   app = Flask(__name__)
@@ -41,7 +41,7 @@ def create_app(test_config=None):
     if categories is None:
       abort(404)
 
-    formatted_categories = dict()
+    formatted_categories = {}
     for category in categories:
       formatted_categories[category.id] = category.type
     
@@ -86,12 +86,12 @@ def create_app(test_config=None):
     '''
     consume question_id (integer)
     Return success message with the deleted question id and the total remaining
-    Return 422 if failed
+    Return 404 if failed
     '''
     #get question
     question = Question.query.filter(Question.id == question_id).first()
     if question is None:
-      abort(422)
+      abort(404)
     #delete question
     try:
       question.delete()
@@ -144,7 +144,6 @@ def create_app(test_config=None):
       except:
         abort(400)
     elif (question[0] and answer[0] and difficulty) :
-      print(question)
       question_obj = Question(question=question, 
                             answer=answer, 
                             difficulty=difficulty, 
