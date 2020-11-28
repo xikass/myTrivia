@@ -9,7 +9,7 @@ Questions are the main component of the trivia app. Each Question has a unique i
 > Endpoints\
 > __POST__  /questions\
 > __GET__   /questions\
-> __POST__  /questions\
+> __POST__  /questions/search\
 > __DELETE__/questions/:id
 
 ## Question Object
@@ -99,7 +99,7 @@ null by default.
 ## Search Questions
 this endpoint retrieve questions search results according to the submitted string
 > Endpoints\
->__POST__ /questions
+>__POST__ /questions/search
 
 ### Request Parameters
 #### searchTerm _String_ __REQUIRED__
