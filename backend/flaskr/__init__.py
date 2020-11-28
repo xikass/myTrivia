@@ -38,8 +38,6 @@ def create_app(test_config=None):
       value = the category type
     '''
     categories = Category.query.all()
-    if categories is None:
-      abort(404)
 
     formatted_categories = {}
     for category in categories:
@@ -58,28 +56,28 @@ def create_app(test_config=None):
     Return 10 question objects per page if success
     Return 404 if failed
     '''
+    try:
+      #get questions
+      questions = Question.query.all()
 
-    #get questions
-    questions = Question.query.all()
-    if len(questions) == 0:
+      current_questions = paginate_questions(request, questions)
+      #get categories
+      categories  = Category.query.all()
+
+      formatted_categories = dict()
+      for category in categories:
+        formatted_categories[category.id] = category.type
+      #set data dictionary
+      data = {
+        'success' : True,
+        'questions' : current_questions,
+        'total_questions' : len(questions),
+        'categories' : formatted_categories,
+        'current_category': None
+      }
+      return jsonify(data)
+    except:
       abort(404)
-    current_questions = paginate_questions(request, questions)
-    #get categories
-    categories  = Category.query.all()
-    if len(categories) == 0:
-      abort(404)
-    formatted_categories = dict()
-    for category in categories:
-      formatted_categories[category.id] = category.type
-    #set data dictionary
-    data = {
-      'success' : True,
-      'questions' : current_questions,
-      'total_questions' : len(questions),
-      'categories' : formatted_categories,
-      'current_category': None
-    }
-    return jsonify(data)
 
   @app.route('/questions/<int:question_id>', methods=['DELETE'])
   def delete_question(question_id):
@@ -104,32 +102,11 @@ def create_app(test_config=None):
       return jsonify(data)
     except:
       abort(422)
-    
-  @app.route('/questions', methods=['POST'])
-  def create_question():
-    '''
-      used for both search and creating question
-      for search :
-        searchTerm (string) should be supplied as json
-      for creating new question, the following should be supplied:
-        {
-          "question" : "string of the question statement?",
-          "answer" : "string of the answer",
-          "difficulty" : an integer between 1 and 3 inclusive,
-          "category" : category_id
-        }
-      if failed will return 400
 
-    '''
-
-    #get body json
+  @app.route('/questions/search', methods=['POST'])
+  def search_questions():
     body = request.get_json()
-
     search_term =body.get('searchTerm')
-    question=body.get('question', None),
-    answer= body.get('answer', None),
-    difficulty=body.get('difficulty', None)
-    category = body.get('category', None)
     if search_term:
       search_term = f'%{search_term}%'
       # get all questions that has case insensetive LIKE search_term
@@ -143,7 +120,29 @@ def create_app(test_config=None):
         })
       except:
         abort(400)
-    elif (question[0] and answer[0] and difficulty) :
+    else:
+      abort(422)
+  @app.route('/questions', methods=['POST'])
+  def create_question():
+    '''
+      creating new question, the following should be supplied:
+        {
+          "question" : "string of the question statement?",
+          "answer" : "string of the answer",
+          "difficulty" : an integer between 1 and 3 inclusive,
+          "category" : category_id
+        }
+      if failed will return 400
+
+    '''
+    #get body json
+    body = request.get_json()
+    
+    question = body.get('question')
+    answer = body.get('answer')
+    difficulty = body.get('difficulty')
+    category = body.get('category')
+    try:
       question_obj = Question(question=question, 
                             answer=answer, 
                             difficulty=difficulty, 
@@ -152,7 +151,7 @@ def create_app(test_config=None):
       data = question_obj.format()
       data['success']= True
       return jsonify(data)
-    else:
+    except:
       abort(400)
 
   @app.route('/categories/<int:category_id>/questions')
