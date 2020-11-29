@@ -109,6 +109,7 @@ def create_app(test_config=None):
     search_term =body.get('searchTerm')
     if search_term:
       search_term = f'%{search_term}%'
+
       # get all questions that has case insensetive LIKE search_term
       try:
         questions = Question.query.filter(Question.question.ilike(search_term)).all()
@@ -138,10 +139,12 @@ def create_app(test_config=None):
     #get body json
     body = request.get_json()
     
-    question = body.get('question')
-    answer = body.get('answer')
+    question = body.get('question', None)
+    answer = body.get('answer',None)
     difficulty = body.get('difficulty')
     category = body.get('category')
+    if (question is None or answer is None):
+      abort(400)
     try:
       question_obj = Question(question=question, 
                             answer=answer, 

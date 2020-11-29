@@ -14,7 +14,11 @@ class TriviaTestCase(unittest.TestCase):
     new_question = {'question': 'string question?',
             'answer': 'string answer',
             'difficulty': 1,
-            'category': 2}
+        'category': 2}
+    new_question2 = {
+        'difficulty': 3,
+        'category' : 2
+    }
     quiz_req = {
         'previous_questions' : [],
         'quiz_category' : {'id':2}
@@ -22,12 +26,14 @@ class TriviaTestCase(unittest.TestCase):
     search_term1 = {"searchTerm": "eg"}
     search_term2 = {"searchTerm": "triv"}
 
+
+
     def setUp(self):
         """Define test variables and initialize app."""
         self.app = create_app()
         self.client = self.app.test_client
         self.database_name = "trivia_test"
-        self.database_path = "postgresql://{}/{}".format('localhost:5432', self.database_name)
+        self.database_path = "postgresql://{}@{}/{}".format('zachariah:123456','localhost:5432', self.database_name)
         setup_db(self.app, self.database_path)
 
         # binds the app to the current context
@@ -108,11 +114,15 @@ class TriviaTestCase(unittest.TestCase):
 
         search_term = f"%{self.search_term1['searchTerm']}%"
         questions = Question.query.filter(Question.question.ilike(search_term)).all()
-        self.assertEqual(data['questions'], questions)
+        formatted_questions = [question.format() for question in questions]
+        self.assertListEqual(data['questions'], formatted_questions)
         self.assertEqual(data['total_questions'],len(questions))
 
-        search_term = f"%{self.search_term2['searchTerm']}%"
-        questions = Question.query.filter(Question.question.ilike(search_term)).all()
+        res = self.client().post('/questions/search', json=self.search_term2)
+        data = json.loads(res.data)
+
+        search_term2 = f"%{self.search_term2['searchTerm']}%"
+        questions = Question.query.filter(Question.question.ilike(search_term2)).all()
         self.assertEqual(data['questions'], questions)
         self.assertEqual(data['total_questions'],len(questions))
 
@@ -131,7 +141,7 @@ class TriviaTestCase(unittest.TestCase):
     
     def test_quiz(self):
         res = self.client().post('/quizzes', json=self.quiz_req)
-        questions = Question.query.filter(Question.category == self.quiz_req['quiz_category']['id']).all()
+        questions = Question.query.filter(Question.category == self.quiz_req['quiz_category']).all()
         formatted_questions = [question.format() for question in questions]
         data = json.loads(res.data)
 
@@ -160,7 +170,21 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 404)
         self.assertFalse(data['success'])
         self.assertEqual(data['message'], 'resources not found')
+    def test_400_create_question(self):
+        res = self.client().post('/questions', json=self.new_question2)
+        data = json.loads(res.data)
 
+        self.assertEqual(data['error'], 400)
+        self.assertEqual(data['message'], 'Bad Request')
+        self.assertFalse(data['success'])
+    def test_404_quizzes(self):
+        res = self.client().post('/quizzes', 
+                                json={'previous_questions':[], 'quiz_category': {'id':1000}})
+        data = json.loads(res.data)
+        
+        self.assertEqual(data['error'], 404)
+        self.assertEqual(data['message'], 'resources not found')
+        self.assertFalse(data['success'])
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
